@@ -62,8 +62,14 @@ export default function Landing() {
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-10 w-52 p-1 shadow"
               >
                 <li>
-                  <Link to="/profile" className="justify-between">
+                  <Link to="/profile/view" className="justify-between">
                     Profile
+                    <span className="badge">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile/feed" className="justify-between">
+                    Feed
                     <span className="badge">New</span>
                   </Link>
                 </li>

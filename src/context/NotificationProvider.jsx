@@ -12,8 +12,10 @@ export const alertClassByType = {
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
 
+  let seq = 0;
+
   const addNotification = (type, message) => {
-    const id = Date.now();
+    const id = `${Date.now()}-${seq++}`; // unique even within the same ms
     setNotifications((prev) => [...prev, { id, type, message }]);
 
     setTimeout(() => {
@@ -32,15 +34,15 @@ export function NotificationProvider({ children }) {
     <NotificationContext.Provider value={api}>
       {children}
       <div className="toast toast-top toast-end">
-        {notifications.map((n) => (
+        {notifications?.map((n) => (
           <div
-            key={n.id}
+            key={n?.id}
             role="alert"
             className={`alert ${
-              alertClassByType[n.type] ?? "alert-info"
+              alertClassByType[n?.type] ?? "alert-info"
             } alert-soft`}
           >
-            <span>{n.message}</span>
+            <span>{n?.message}</span>
           </div>
         ))}
       </div>
