@@ -1,7 +1,18 @@
-import { useNavigate } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogout } from "../../src/hooks/logout";
 export default function Landing() {
+  const logout = useLogout();
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = useSelector((store) => store?.user?.data);
+
+  useEffect(() => {
+    if (user) {
+      setIsLoggedIn(true);
+    }
+  }, [user]);
   return (
     <div className="min-h-screen bg-base-100">
       {/* Navbar */}
@@ -18,17 +29,54 @@ export default function Landing() {
             CodeCrush
           </a>
         </div>
-        <div className="navbar-end space-x-2">
-          <button className="btn btn-ghost" onClick={() => navigate("/login")}>
-            Login
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate("/signup")}
-          >
-            Sign up
-          </button>
-        </div>
+        {!isLoggedIn ? (
+          <div className="navbar-end space-x-2">
+            <button
+              className="btn btn-ghost"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate("/signup")}
+            >
+              Sign up
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-end w-full">
+            <div className="dropdown dropdown-end flex align-center">
+              <div className="flex self-center">Hey, {user?.firstName}</div>
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-20 rounded-full mx-1 ">
+                  <img alt="User Photo" src={user?.photo_url} />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-10 w-52 p-1 shadow"
+              >
+                <li>
+                  <Link to="/profile" className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <a>Settings</a>
+                </li>
+                <li>
+                  <a onClick={logout}>Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Hero Section */}
@@ -231,12 +279,21 @@ export default function Landing() {
             Join thousands of developers who've already found their perfect
             match. Your next great collaboration is just a swipe away.
           </p>
-          <button
-            className="btn btn-lg bg-base-100 text-primary hover:bg-base-200"
-            onClick={() => navigate("/signup")}
-          >
-            Sign up now
-          </button>
+          {!isLoggedIn ? (
+            <button
+              className="btn btn-lg bg-base-100 text-primary hover:bg-base-200"
+              onClick={() => navigate("/signup")}
+            >
+              Sign up now
+            </button>
+          ) : (
+            <button
+              className="btn btn-lg bg-base-100 text-primary hover:bg-base-200"
+              onClick={() => navigate("/profile/feed")}
+            >
+              Go To Feed
+            </button>
+          )}
         </div>
       </section>
 

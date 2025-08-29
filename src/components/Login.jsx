@@ -3,43 +3,38 @@ import { useState } from "react";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/slices/userSlice";
+import { BASE_URL } from "../utils/constants";
+import { useNotification } from "../context/NotificationProvider";
 
 export default function Login() {
+  const notification = useNotification();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
   const [err, setErr] = useState();
-  console.log("🚀 ~ Login ~ err:", err);
+
   const navigate = useNavigate();
 
   const loginHandler = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:7777/login",
+        BASE_URL + "login",
         {
           emailId: email,
           password,
         },
         { withCredentials: true }
       );
-
-      navigate("/profile/feed");
+      if (res?.status == 200) {
+        dispatch(addUser(res?.data));
+        navigate("/profile/feed");
+        notification.success(res?.data?.message || "Login successful");
+      }
     } catch (err) {
-      const code = err.code?.split("/")[1] || "unknown-error";
-      console.log("🚀 ~ loginHandler ~ code:", code);
-
-      const errorMessages = {
-        "invalid-email": "Invalid email address.",
-        "email-already-in-use": "Email already registered.",
-        "weak-password": "password should be at least 6 characters.",
-        "user-not-found": "No account found for this email.",
-        "invalid-credential": "Incorrect password.",
-        "popup-closed-by-user": "Login popup was closed.",
-        "network-request-failed": "Network error. Check your connection.",
-        "missing-password": "Please enter a password.",
-      };
-
-      const message = errorMessages[code] || "Something went wrong!";
-      setErr(message);
+      notification.error(err?.response?.data || "Login failed");
+      setErr(err?.response?.data || "Login failed");
     }
   };
 
@@ -52,7 +47,7 @@ export default function Login() {
             <h2 className="text-3xl font-semibold">Log in</h2>
           </div>
 
-          <button
+          {/* <button
             // onClick={googleLogin}
             className="w-full flex items-center justify-center border border-gray-700 rounded-md py-2 hover:bg-gray-900"
           >
@@ -64,7 +59,7 @@ export default function Login() {
             Continue with Google
           </button>
 
-          <div className="text-center text-sm text-gray-500">OR</div>
+          <div className="text-center text-sm text-gray-500">OR</div> */}
 
           <div className="space-y-4">
             <input
