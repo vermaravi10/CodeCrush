@@ -12,6 +12,7 @@ import Feed from "./components/Feed";
 import Profile from "./components/Profile";
 import NotFound from "./components/NotFound";
 import ConnectionsPage from "./components/Connections";
+import ConnectionRequestsPage from "./components/ConnectionRequests";
 const App = () => {
   return (
     <>
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="feed" element={<Feed />} />
                 <Route path="view" element={<Profile />} />
                 <Route path="connections" element={<ConnectionsPage />} />
+                <Route path="requests" element={<ConnectionRequestsPage />} />
               </Route>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />

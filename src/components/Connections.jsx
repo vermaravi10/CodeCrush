@@ -39,13 +39,17 @@ const ConnectionsPage = () => {
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     if (!needle) return connections;
+
     return connections?.filter((u) => {
-      const name = `${u?.firstName ?? ""} ${u?.lastName ?? ""}`.toLowerCase();
-      const age = u?.age ?? "";
-      const about = (u?.about ?? "").toLowerCase();
+      const name = String(
+        `${u?.firstName ?? ""} ${u?.lastName ?? ""}`
+      ).toLowerCase();
+      const age = String(u?.age ?? ""); // safe: number/null → string
+      const about = String(u?.about ?? "").toLowerCase();
       const skills = Array.isArray(u?.skills)
-        ? u.skills.join(" ").toLowerCase()
+        ? u.skills.map(String).join(" ").toLowerCase()
         : "";
+
       return (
         name.includes(needle) ||
         age.includes(needle) ||

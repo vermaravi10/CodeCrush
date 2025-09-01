@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import {
   motion,
   AnimatePresence,
@@ -8,21 +8,11 @@ import {
 } from "framer-motion";
 
 export default function FeedCard({ feedData = [], onInterested, onIgnored }) {
-  const [stack, setStack] = useState(() => [...feedData]);
-
   const isAnimatingRef = useRef(false);
-
-  useEffect(() => {
-    setStack([...feedData]); // or [...feedData].reverse() if you want reverse order
-  }, [feedData]);
 
   const handleDecision = (dir, user) => {
     if (dir === "right" && onInterested) onInterested(user);
     if (dir === "left" && onIgnored) onIgnored(user);
-  };
-
-  const removeTop = (user) => {
-    setStack((s) => s.filter((u) => u !== user));
   };
 
   const dragX = useMotionValue(0);
@@ -44,12 +34,11 @@ export default function FeedCard({ feedData = [], onInterested, onIgnored }) {
         })
         .then(() => {
           handleDecision(dir, user);
-          removeTop(user);
+
           isAnimatingRef.current = false;
           dragX.set(0);
         });
     } else {
-      // snap back
       controls.start({
         x: 0,
         y: 0,
@@ -61,28 +50,28 @@ export default function FeedCard({ feedData = [], onInterested, onIgnored }) {
   };
 
   const programmaticSwipe = (dir) => {
-    const user = stack[stack.length - 1];
+    const user = feedData[feedData.length - 1];
     if (!user || isAnimatingRef.current) return;
-    // Simple instant remove (could animate similarly with controls if you want)
+
     handleDecision(dir, user);
-    removeTop(user);
+
     dragX.set(0);
   };
 
   return (
-    <div className="w-full flex flex-col items-center gap-4">
-      {/* Card stack */}
-      <div className="relative w-[min(92vw,420px)] h-[560px] select-none">
+    <div className="w-full flex flex-col items-center gap-20">
+      {/* Card feedData */}
+      <div className="relative w-[min(92vw,380px)] h-[min(75vh,560px)] select-none">
         <AnimatePresence initial={false}>
-          {stack.map((user, i) => {
-            const isTop = i === stack.length - 1;
+          {feedData.map((user, i) => {
+            const isTop = i === feedData.length - 1;
 
             return (
               <DraggableCard
                 key={user._id}
                 user={user}
                 zIndex={100 + i}
-                offset={stack.length - 1 - i}
+                offset={feedData.length - 1 - i}
                 isTop={isTop}
                 onDragEnd={onDragEnd}
                 dragX={dragX}
@@ -91,14 +80,12 @@ export default function FeedCard({ feedData = [], onInterested, onIgnored }) {
             );
           })}
         </AnimatePresence>
-        {stack.length === 0 && (
+        {feedData.length === 0 && (
           <div className="absolute inset-0 grid place-items-center rounded-2xl border border-base-300 text-base-content/70">
             No more profiles 🎉
           </div>
         )}
       </div>
-
-      {/* Actions */}
     </div>
   );
 }
@@ -114,7 +101,6 @@ function DraggableCard({
 }) {
   const controls = useAnimationControls();
 
-  // Lower cards "peek" as top card moves
   const absX = useTransform(dragX, (v) => Math.abs(v));
   const lift = useTransform(absX, [0, 200], [0, 14]);
   const widen = useTransform(absX, [0, 200], [0, 0.02]);
@@ -184,7 +170,7 @@ function Card({
       style={style}
       onDragEnd={onDragEnd}
       animate={controls}
-      className="h-full w-full rounded-2xl overflow-hidden border border-base-300 bg-base-100 shadow-2xl select-none"
+      className="flex flex-col justify-start h-full w-full rounded-2xl overflow-hidden border border-base-300 bg-base-100 shadow-2xl select-none"
     >
       {/* top media */}
       <div className="h-2/3 relative bg-base-200">

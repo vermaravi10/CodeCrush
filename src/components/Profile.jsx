@@ -55,6 +55,7 @@ export default function Profile() {
         { withCredentials: true }
       );
       if (res?.status === 200) {
+        console.log("Profile updated:", res?.data);
         notification.success(
           res?.data?.message || "Profile updated successfully"
         );

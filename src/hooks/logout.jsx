@@ -7,6 +7,8 @@ import { BASE_URL } from "../utils/constants";
 import { useNotification } from "../context/NotificationProvider";
 import { clearFeed } from "../utils/slices/feedSlice";
 import { clearConnections } from "../utils/slices/connectionSlice";
+import { clearTheme } from "../utils/slices/themeSlice";
+import { clearRequests } from "../utils/slices/requestSlice";
 
 export function useLogout() {
   const notification = useNotification();
@@ -21,10 +23,12 @@ export function useLogout() {
         { withCredentials: true }
       );
       if (res.status === 200) {
+        navigate("/login");
         dispatch(removeUser());
         dispatch(clearFeed());
         dispatch(clearConnections());
-        navigate("/login");
+        dispatch(clearTheme());
+        dispatch(clearRequests());
       }
     } catch (err) {
       notification.error(err?.response?.data || "Logout failed");

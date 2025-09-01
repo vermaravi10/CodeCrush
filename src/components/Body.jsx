@@ -13,6 +13,8 @@ const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store?.user?.data);
+  const theme = useSelector((store) => store?.theme);
+  console.log("🚀 ~ Body ~ theme:", theme);
   const notification = useNotification();
 
   const fetchUser = async () => {
@@ -43,11 +45,14 @@ const Body = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      data-theme={theme || "caramellatte"}
+      className="flex flex-col w-full h-full"
+    >
       <NavBar />
-      <main className="flex-grow">
-        <Outlet />
-      </main>
+
+      <Outlet />
+
       <Footer />
     </div>
   );

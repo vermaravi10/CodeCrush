@@ -1,14 +1,26 @@
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+import { useNotification } from "../context/NotificationProvider";
+
 // ProfileCard.jsx
-export default function ProfileCard({ user, variant = "large" }) {
-  if (!user) return null;
+
+export default function ProfileCard({
+  requestId = null,
+  user,
+  variant = "large",
+  requestPage = false,
+  handleReview = () => {},
+}) {
+  const notification = useNotification();
 
   const fallback = `https://media.istockphoto.com/id/1327592506/vector/default-avatar-photo-placeholder-icon-grey-profile-picture-business-man.jpg?s=612x612&w=0&k=20&c=BpR0FVaEa5F24GIw7K8nMWiiGmbb8qmhfkpXcp1dhQg=`;
-
   const cardWidth =
     variant === "small"
       ? "w-[min(92vw,280px)]" // smaller width for grid
       : "w-[min(92vw,420px)]";
   const imageHeight = variant === "small" ? "h-[220px]" : "h-[360px]";
+
+  if (!user) return null;
 
   return (
     <div
@@ -19,7 +31,7 @@ export default function ProfileCard({ user, variant = "large" }) {
         <img
           src={user?.photo_url || fallback}
           alt={user?.firstName || "profile"}
-          className="h-full w-full object-cover select-none"
+          className="h-full w-full object-fit select-none"
           loading="lazy"
           draggable={false}
         />
@@ -53,6 +65,22 @@ export default function ProfileCard({ user, variant = "large" }) {
                 {s}
               </span>
             ))}
+          </div>
+        )}
+        {requestPage && (
+          <div className="flex justify-center items-center gap-4">
+            <button
+              className="btn btn-outline btn-error"
+              onClick={() => handleReview("rejected", requestId)}
+            >
+              Reject
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => handleReview("accepted", requestId)}
+            >
+              Accept
+            </button>
           </div>
         )}
       </div>
