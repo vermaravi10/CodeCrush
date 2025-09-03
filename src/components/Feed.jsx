@@ -18,8 +18,8 @@ const Feed = () => {
       });
 
       if (res?.status == 200) {
+        notification.success(res?.data?.message);
         dispatch(setFeed(res?.data));
-        notification.success(res?.data?.message || "Feed loaded successfully");
       }
     } catch (err) {
       notification.error(err?.response?.data || "Failed to load feed");
@@ -34,7 +34,9 @@ const Feed = () => {
         {},
         { withCredentials: true }
       );
-      if (res?.status === 201) {
+
+      if (res?.status == 201) {
+        console.log("🚀 ~ handleInterested ~ res:", res);
         notification.success(res?.data?.message || "Marked as interested");
         fetchFeed();
       }
@@ -65,7 +67,10 @@ const Feed = () => {
     }
   }, []);
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div
+      className=" flex justify-center items-center"
+      style={{ height: "calc(100vh - 132px)" }}
+    >
       <FeedCard
         feedData={feed}
         onIgnored={handleIgnore}

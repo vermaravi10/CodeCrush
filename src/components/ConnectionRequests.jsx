@@ -65,7 +65,7 @@ export default function ConnectionRequestsPage() {
   const count = requests?.length ?? 0;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <section className="min-h-screen flex flex-col max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
       {/* Header */}
       <header className="mb-6">
         <h1 className="text-2xl font-semibold">Connection Requests</h1>
@@ -76,15 +76,17 @@ export default function ConnectionRequestsPage() {
 
       {/* Empty state */}
       {!count ? (
-        <div className="rounded-2xl border border-base-300 bg-base-100 p-10 text-center">
-          <h2 className="text-lg font-medium">You’re all caught up 🎉</h2>
-          <p className="text-sm text-base-content/60">
-            New connection requests will appear here.
-          </p>
+        <div className=" flex items-center justify-center">
+          <div className="rounded-2xl border border-base-300 bg-base-100 p-10 text-center">
+            <h2 className="text-lg font-medium">You’re all caught up 🎉</h2>
+            <p className="text-sm text-base-content/60">
+              New connection requests will appear here.
+            </p>
+          </div>
         </div>
       ) : (
         // Responsive grid
-        <div className="flex justify-center  flex-wrap  gap-10">
+        <div className=" flex justify-center  gap-10">
           {requests?.map((u) => (
             <ProfileCard
               key={u?._id || `${u?.firstName}-${u?.lastName}`}
